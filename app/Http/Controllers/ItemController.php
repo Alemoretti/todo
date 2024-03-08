@@ -45,7 +45,7 @@ class ItemController extends Controller
         $item->completed = $request->input('completed');
         $item->save();
 
-        return redirect()->route('items.index')->with('success', 'Item updated successfully');
+        return redirect()->route('items')->with('success', 'Item updated successfully');
     }
 
     /**
