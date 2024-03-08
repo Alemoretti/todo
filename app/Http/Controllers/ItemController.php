@@ -42,6 +42,7 @@ class ItemController extends Controller
 
         $item = Item::findOrFail($id);
         $item->name = $request->input('name');
+        $item->completed = $request->input('completed');
         $item->save();
 
         return redirect()->route('items.index')->with('success', 'Item updated successfully');
@@ -66,5 +67,5 @@ class ItemController extends Controller
         $item->completed = true;
 
         return redirect()->route('items.index')->with('success', 'Item deleted successfully');
-    }    
+    }
 }

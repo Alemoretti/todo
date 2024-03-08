@@ -27,10 +27,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -38,11 +34,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/items/store', [ItemController::class, 'store'])->name('items.store');
     Route::delete('/items/delete', [ItemController::class, 'destroy'])->name('items.destroy');
     Route::get('/items', function () {
-        dd(Item::where('user_id', auth()->id())->get());
-        return Inertia::render('Items/Index', [
+        return Inertia::render('Items', [
             'items' => Item::where('user_id', auth()->id())->get(),
         ]);
-    })->name('item.index');
+    })->name('items');
 });
 
 require __DIR__.'/auth.php';
