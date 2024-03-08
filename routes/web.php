@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ItemController;
+use App\Models\Item;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +35,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/items/store', [ItemController::class, 'store'])->name('items.store');
+    Route::delete('/items/delete', [ItemController::class, 'destroy'])->name('items.destroy');
+    Route::get('/items', function () {
+        dd(Item::where('user_id', auth()->id())->get());
+        return Inertia::render('Items/Index', [
+            'items' => Item::where('user_id', auth()->id())->get(),
+        ]);
+    })->name('item.index');
 });
 
 require __DIR__.'/auth.php';

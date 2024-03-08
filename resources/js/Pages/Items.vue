@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
-defineProps({ items: Object })
+defineProps({ items: Object });
 </script>
 
 <template>
@@ -10,7 +10,7 @@ defineProps({ items: Object })
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard1</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Items</h2>
         </template>
 
         <div class="py-12">

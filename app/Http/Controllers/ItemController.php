@@ -3,62 +3,68 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Item;
 
 class ItemController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the item's list.
      */
     public function index()
     {
-        //
+        return Inertia::render('Items/Index', [
+            'items' => Item::where('user_id', auth()->id())->get(),
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a newly created item.
      */
     public function store(Request $request)
     {
-        //
+        $newItem = new Item;
+        $newItem->user_id = auth()->id();
+        $newItem->name = $request->item["name"];
+        $newItem->save();
+
+        return redirect()->back();
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update the specified item.
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+        ]);
+
+        $item = Item::findOrFail($id);
+        $item->name = $request->input('name');
+        $item->save();
+
+        return redirect()->route('items.index')->with('success', 'Item updated successfully');
+    }
+
+    /**
+     * Remove the specified item.
+     */
+    public function destroy(string $id)
+    {
+        $item = Item::findOrFail($id);
+        $item->delete();
+        return redirect()->route('items.index')->with('success', 'Item deleted successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function completeTask(string $id)
     {
-        //
-    }
+        $item = Item::findOrFail($id);
+        $item->completed = true;
+
+        return redirect()->route('items.index')->with('success', 'Item deleted successfully');
+    }    
 }
