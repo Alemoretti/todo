@@ -23,9 +23,10 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
+        
         $newItem = new Item;
         $newItem->user_id = auth()->id();
-        $newItem->name = $request->item["name"];
+        $newItem->name = $request->get('name');
         $newItem->save();
 
         return redirect()->back();
@@ -43,8 +44,10 @@ class ItemController extends Controller
         $item = Item::findOrFail($id);
         $item->name = $request->input('name');
         $item->completed = $request->input('completed');
-        $item->save();
-
+        if (!$item->save()) {
+            return redirect()->back()->with('error', 'Failed to update item');
+        }
+    
         return redirect()->route('items')->with('success', 'Item updated successfully');
     }
 

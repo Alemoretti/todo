@@ -13,19 +13,13 @@ export default {
     },
     data() {
         return {
-            localItems: this.items || [],
+            localItems: this.items.map(item => ({
+                ...item,
+                completedBoolean: item.completed === 1
+            })),
+            newItemName: '',
         }
     },
-    computed: {
-        completedBoolean: {
-            get() {
-                return this.item.completed === 1
-            },
-            set(newValue) {
-                this.item.completed = newValue ? 1 : 0
-            },
-        },
-    }, 
     methods: {
         updateItem(item) {
             this.$inertia.put(`/items/update/${item.id}`, item)
@@ -35,7 +29,18 @@ export default {
                 .then(() => {
                     this.localItems = this.localItems.filter(i => i.id !== item.id)
                 })
-        },        
+        },
+        addItem() {
+            if (this.newItemName.trim()) {
+                this.$inertia.post('/items/store', { name: this.newItemName }, {
+                    onSuccess: (page) => {
+                        this.localItems = page.props.items;
+                        this.newItemName = '';
+                    }
+                });
+            }
+        },   
+        
     },
     mounted() {
         if (!this.items) {
@@ -54,23 +59,19 @@ export default {
     <Head title="Items" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">To-do list</h2>
-        </template>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <div v-for="item in localItems" :key="item.id">
-                            <input type="checkbox" :id="item.id" v-model="item.completedBoolean"  @change="updateItem(item)">
-                            <label :for="item.id">{{ item.name }}</label>
-                            <button @click="removeItem(item)">X</button>
+                        <div v-for="item in localItems" :key="item.id" class="flex items-center space-x-4 mb-4">
+                            <input type="checkbox" :id="item.id" v-model="item.completed" @change="updateItem(item)" class="h-5 w-5 text-blue-600 rounded">
+                            <label :for="item.id" class="text-lg" :class="{ 'line-through': item.completed, 'text-gray-500': item.completed }">{{ item.name }}</label>
+                            <button @click="removeItem(item)" class="text-red-500 hover:text-red-700">X</button>
                         </div>
                     </div>
                     <div class="p-6 text-gray-900">
-                        <input type="text" v-model="newItemName" placeholder="New item name">
-                        <button class="btn btn-blue" @click="addItem">Add Item</button>
+                        <input type="text" v-model="newItemName" name="item" placeholder="New item name" class="border rounded-lg p-2 w-full">
+                        <button class="btn btn-blue mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="addItem">Add Item</button>
                     </div>                    
                 </div>
             </div>
