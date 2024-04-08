@@ -29,7 +29,7 @@ class ItemController extends Controller
         $newItem->name = $request->get('name');
         $newItem->save();
 
-        return redirect()->back();
+        return redirect()->route('items')->with('success', 'Item created successfully');
     }
 
     /**
@@ -58,7 +58,7 @@ class ItemController extends Controller
     {
         $item = Item::findOrFail($id);
         $item->delete();
-        return redirect()->route('items.index')->with('success', 'Item deleted successfully');
+        return redirect()->route('items')->with('success', 'Item deleted successfully');
     }
 
     /**
@@ -69,6 +69,6 @@ class ItemController extends Controller
         $item = Item::findOrFail($id);
         $item->completed = true;
 
-        return redirect()->route('items.index')->with('success', 'Item deleted successfully');
+        return redirect()->route('items.index')->with('success', 'Item completed successfully');
     }
 }
