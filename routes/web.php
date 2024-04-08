@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/items/store', [ItemController::class, 'store'])->name('items.store');
     Route::put('/items/update/{id}', [ItemController::class, 'update'])->name('items.update');
-    Route::delete('/items/delete', [ItemController::class, 'destroy'])->name('items.destroy');
+    Route::delete('/items/delete/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
     Route::get('/items', function () {
         return Inertia::render('Items', [
             'items' => Item::where('user_id', auth()->id())->get(),

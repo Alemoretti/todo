@@ -25,10 +25,11 @@ export default {
             this.$inertia.put(`/items/update/${item.id}`, item)
         },
         removeItem(item) {
-            this.$inertia.delete(`items/destroy/${item.id}`)
-                .then(() => {
+            this.$inertia.delete(`items/delete/${item.id}`, {
+                onSuccess: () => {
                     this.localItems = this.localItems.filter(i => i.id !== item.id)
-                })
+                }
+            })
         },
         addItem() {
             if (this.newItemName.trim()) {
